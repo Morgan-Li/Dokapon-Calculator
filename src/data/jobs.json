@@ -1,0 +1,173 @@
+{
+  "Warrior": {
+    "name": "Warrior",
+    "weapons": [
+      "Dancing Blade",
+      "Dark Sword",
+      "Dokapon Sword",
+      "Dokaqon Sword",
+      "Dragonslayer",
+      "Estoc",
+      "Flambard",
+      "Great Axe",
+      "Greatsword",
+      "Long Spear",
+      "Longsword",
+      "Partisan",
+      "Rapier",
+      "Sabre",
+      "Scimitar",
+      "Shamshir",
+      "Silver Sword",
+      "Soul Eater",
+      "Thunder Axe",
+      "Thunder Blade",
+      "Trident"
+    ]
+  },
+  "Hero": {
+    "name": "Hero",
+    "weapons": [
+      "Dancing Blade",
+      "Dark Sword",
+      "Dokapon Sword",
+      "Dokaqon Sword",
+      "Dragonslayer",
+      "Estoc",
+      "Flambard",
+      "Great Axe",
+      "Greatsword",
+      "Long Spear",
+      "Longsword",
+      "Partisan",
+      "Rapier",
+      "Sabre",
+      "Scimitar",
+      "Shamshir",
+      "Silver Sword",
+      "Soul Eater",
+      "Thunder Axe",
+      "Thunder Blade",
+      "Trident"
+    ]
+  },
+  "Spellsword": {
+    "name": "Spellsword",
+    "weapons": [
+      "Dancing Blade",
+      "Dark Sword",
+      "Dokapon Sword",
+      "Dokaqon Sword",
+      "Dragonslayer",
+      "Estoc",
+      "Flambard",
+      "Great Axe",
+      "Greatsword",
+      "Long Spear",
+      "Longsword",
+      "Partisan",
+      "Rapier",
+      "Sabre",
+      "Scimitar",
+      "Shamshir",
+      "Silver Sword",
+      "Soul Eater",
+      "Thunder Axe",
+      "Thunder Blade",
+      "Trident"
+    ]
+  },
+  "Magician": {
+    "name": "Magician",
+    "weapons": [
+      "Crimson Wand",
+      "Dream Rod",
+      "Fairy Wand",
+      "Mace",
+      "Rune Staff",
+      "Underworld Staff"
+    ]
+  },
+  "Alchemist": {
+    "name": "Alchemist",
+    "weapons": [
+      "Crimson Wand",
+      "Dream Rod",
+      "Fairy Wand",
+      "Mace",
+      "Rune Staff",
+      "Underworld Staff"
+    ]
+  },
+  "Thief": {
+    "name": "Thief",
+    "weapons": [
+      "Combat Knife",
+      "Dagger",
+      "Deadly Dagger",
+      "Gladius",
+      "Great Tempest",
+      "Knife"
+    ]
+  },
+  "Robo Knight": {
+    "name": "Robo Knight",
+    "weapons": [
+      "Cyber Saber",
+      "Drill Lance",
+      "No-Recoil Cannon"
+    ]
+  },
+  "Cleric": {
+    "name": "Cleric",
+    "weapons": [
+      "Battleaxe",
+      "Exorcism Spear",
+      "Flare Lance",
+      "Halberd",
+      "Hand Axe",
+      "Maul",
+      "Smith's Hammer",
+      "Spear",
+      "Warhammer"
+    ]
+  },
+  "Ninja": {
+    "name": "Ninja",
+    "weapons": [
+      "Dragon Guandao",
+      "Ichimonji Katana",
+      "Nihilist Sword"
+    ]
+  },
+  "Monk": {
+    "name": "Monk",
+    "weapons": [
+      "Aura Knuckle",
+      "Battlefist",
+      "Brass Knuckle",
+      "Chi Knuckle",
+      "Divine Fist",
+      "Knitten Mitten",
+      "Poison Fist"
+    ]
+  },
+  "Acrobat": {
+    "name": "Acrobat",
+    "weapons": [
+      "Arbalest",
+      "Crimson Candle",
+      "Crossbow",
+      "Elven Bow",
+      "Longbow",
+      "Pistol Crossbow",
+      "Repeater",
+      "Sleep Bow",
+      "Toy Hammer"
+    ]
+  },
+  "Darkling": {
+    "name": "Darkling",
+    "weapons": []
+  }
+}

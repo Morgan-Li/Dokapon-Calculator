@@ -1,0 +1,94 @@
+{
+  "Scorch": {
+    "name": "Scorch",
+    "power": 1.95
+  },
+  "Scorcher": {
+    "name": "Scorcher",
+    "power": 2.65
+  },
+  "Giga Blaze": {
+    "name": "Giga Blaze",
+    "power": 3.7
+  },
+  "Zap": {
+    "name": "Zap",
+    "power": 2.25
+  },
+  "Zapper": {
+    "name": "Zapper",
+    "power": 3.15
+  },
+  "Lectro Beam": {
+    "name": "Lectro Beam",
+    "power": 4.45
+  },
+  "Chill": {
+    "name": "Chill",
+    "power": 2.1
+  },
+  "Chiller": {
+    "name": "Chiller",
+    "power": 2.9
+  },
+  "Ice Barrage": {
+    "name": "Ice Barrage",
+    "power": 4.1
+  },
+  "Gust": {
+    "name": "Gust",
+    "power": 2.45
+  },
+  "Guster": {
+    "name": "Guster",
+    "power": 3.2
+  },
+  "F5 Storm": {
+    "name": "F5 Storm",
+    "power": 4.75
+  },
+  "Mirror Image": {
+    "name": "Mirror Image",
+    "power": 2.4
+  },
+  "Teleport": {
+    "name": "Teleport",
+    "power": 3.0
+  },
+  "Aurora": {
+    "name": "Aurora",
+    "power": 5.0
+  },
+  "Curse": {
+    "name": "Curse",
+    "power": 1.6
+  },
+  "Sleepy": {
+    "name": "Sleepy",
+    "power": 1.1
+  },
+  "Blind": {
+    "name": "Blind",
+    "power": 1.4
+  },
+  "Banish": {
+    "name": "Banish",
+    "power": 2.5
+  },
+  "Drain": {
+    "name": "Drain",
+    "power": 0
+  },
+  "Swap": {
+    "name": "Swap",
+    "power": 0
+  },
+  "Pickpocket": {
+    "name": "Pickpocket",
+    "power": 1.5
+  },
+  "Rust": {
+    "name": "Rust",
+    "power": 3.6
+  }
+}

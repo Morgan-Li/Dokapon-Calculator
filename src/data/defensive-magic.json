@@ -1,0 +1,78 @@
+{
+  "M Guard": {
+    "name": "M Guard",
+    "power": 0.2
+  },
+  "M Guard+": {
+    "name": "M Guard+",
+    "power": 0.6
+  },
+  "M Guard DX": {
+    "name": "M Guard DX",
+    "power": 0.9
+  },
+  "Refresh": {
+    "name": "Refresh",
+    "power": 0.2
+  },
+  "Refresh+": {
+    "name": "Refresh+",
+    "power": 0.35
+  },
+  "Refresh DX": {
+    "name": "Refresh DX",
+    "power": 0.5
+  },
+  "Super Cure": {
+    "name": "Super Cure",
+    "power": 0.5
+  },
+  "Seal Magic": {
+    "name": "Seal Magic",
+    "power": 0.3
+  },
+  "Seal Magic+": {
+    "name": "Seal Magic+",
+    "power": 0.5
+  },
+  "Shock": {
+    "name": "Shock",
+    "power": 0.6
+  },
+  "Mirror": {
+    "name": "Mirror",
+    "power": 0.5
+  },
+  "MG Charge": {
+    "name": "MG Charge",
+    "power": 0.35
+  },
+  "AT Charge": {
+    "name": "AT Charge",
+    "power": 0.35
+  },
+  "DF Charge": {
+    "name": "DF Charge",
+    "power": 0.35
+  },
+  "SP Charge": {
+    "name": "SP Charge",
+    "power": 0.35
+  },
+  "Charge All": {
+    "name": "Charge All",
+    "power": 0.6
+  },
+  "Charm": {
+    "name": "Charm",
+    "power": 0.7
+  },
+  "Bounce": {
+    "name": "Bounce",
+    "power": 0
+  },
+  "Super Bounce": {
+    "name": "Super Bounce",
+    "power": 0
+  }
+}
