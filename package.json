@@ -10,11 +10,11 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
+    "fuse.js": "^7.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-zoom-pan-pinch": "^3.3.0",
-    "tesseract.js": "^5.0.4",
-    "fuse.js": "^7.0.0"
+    "tesseract.js": "^5.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

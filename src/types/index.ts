@@ -25,13 +25,13 @@ export interface CharacterState {
 }
 
 export interface DamageResult {
-  action: 'Attack' | 'Strike' | 'Magic';
+  action: 'Attack' | 'Strike' | 'Magic' | 'Counter Returned';
   defenderReaction: DefenderReaction;
   minDamage: number;
   maxDamage: number;
   koMin: boolean;  // min damage >= defender HP
   koMax: boolean;  // max damage >= defender HP
-  notes?: string;  // special cases like "Counter: attacker takes damage"
+  notes?: string;  // e.g., "Attacker takes damage"
 }
 
 export interface ROI {

@@ -10,28 +10,31 @@ export const WEAPONS: string[] = weaponsData as string[];
 export const DEFENSIVE_MAGIC: Record<string, DefensiveMagicData> = defensiveMagicData as Record<string, DefensiveMagicData>;
 export const OFFENSIVE_MAGIC: Record<string, OffensiveMagicData> = offensiveMagicData as Record<string, OffensiveMagicData>;
 
-// Helper: Get all job names
+// Helper: Get all job names (sorted alphabetically)
 export function getJobNames(): string[] {
-  return Object.keys(JOBS);
+  return Object.keys(JOBS).sort();
 }
 
-// Helper: Get all weapon names
+// Helper: Get all weapon names (sorted alphabetically, with 'None' option)
 export function getWeaponNames(): string[] {
-  return WEAPONS;
+  return ['None', ...WEAPONS.sort()];
 }
 
-// Helper: Get all defensive magic names
+// Helper: Get all defensive magic names (sorted alphabetically)
 export function getDefensiveMagicNames(): string[] {
-  return Object.keys(DEFENSIVE_MAGIC);
+  return Object.keys(DEFENSIVE_MAGIC).sort();
 }
 
-// Helper: Get all offensive magic names
+// Helper: Get all offensive magic names (sorted alphabetically)
 export function getOffensiveMagicNames(): string[] {
-  return Object.keys(OFFENSIVE_MAGIC);
+  return Object.keys(OFFENSIVE_MAGIC).sort();
 }
 
 // Check if a job is proficient with a weapon
 export function isProficient(jobName: string, weaponName: string): boolean | 'unknown' {
+  // No weapon means no proficiency
+  if (weaponName === 'None') return false;
+
   const job = JOBS[jobName];
   if (!job) return 'unknown';
 
@@ -52,6 +55,9 @@ export function getOffensivePower(magicName: string): number | 'unknown' {
 
 // Get proficiency multiplier
 export function getProficiencyMultiplier(jobName: string, weaponName: string): number {
+  // No weapon means 1.0 multiplier (no bonus or penalty)
+  if (weaponName === 'None') return 1.0;
+
   const proficient = isProficient(jobName, weaponName);
   if (proficient === 'unknown' || proficient === false) return 1.0;
   return 1.3; // 30% bonus

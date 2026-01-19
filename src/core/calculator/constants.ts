@@ -37,3 +37,6 @@ export const ATTACK_AT_MULTIPLIER = 2.8;
 export const ATTACK_DF_MULTIPLIER = 1.2;
 export const STRIKE_TOTAL_MULTIPLIER = 2.5;
 export const MAGIC_MG_MULTIPLIER = 2.4;
+
+// Accuracy formula: (Attacker SP / (Attacker SP + Defender SP)) * 100 + 25
+export const ACCURACY_BASELINE = 25;
