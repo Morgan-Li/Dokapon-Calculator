@@ -9,6 +9,7 @@ import { isProficient, getJobNames, getWeaponNames, getDefensiveMagicNames, getO
 import { extractCharacterStats, extractBattleStats } from './core/ocr/parser'
 import { matchJob, matchWeapon, matchOffensiveMagic, matchDefensiveMagic } from './core/reference/matcher'
 import exampleDokapon from './assets/example-Dokapon.png'
+import exampleBattleDokapon from './assets/example-battle-dokapon.png'
 
 function App() {
   const [screenshot, setScreenshot] = useState<string | null>(null);
@@ -370,7 +371,7 @@ function App() {
                   onPaste={handlePaste}
                   className="relative block border-2 border-dashed border-gray-600 rounded-lg p-8 hover:border-blue-400 focus:border-blue-400 focus:outline-none transition-colors cursor-pointer text-center overflow-hidden"
                   style={{
-                    backgroundImage: `url(${exampleDokapon})`,
+                    backgroundImage: `url(${screenMode === 'battle' ? exampleBattleDokapon : exampleDokapon})`,
                     backgroundSize: 'contain',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
