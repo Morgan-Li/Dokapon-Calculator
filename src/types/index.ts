@@ -19,6 +19,7 @@ export interface CharacterState {
   weapon: string;
   defensiveMagic?: string;
   offensiveMagic?: string;
+  battleSkill?: string;
 
   // Derived values (auto-computed from reference data)
   isProficient: boolean | 'unknown';
@@ -68,9 +69,16 @@ export interface WeaponData {
 export interface DefensiveMagicData {
   name: string;
   power: number;  // defensive power value
+  description: string;  // effect description
 }
 
 export interface OffensiveMagicData {
   name: string;
   power: number;  // offensive power multiplier
+  description: string;  // effect description
+}
+
+export interface BattleSkillData {
+  name: string;
+  description: string;  // effect description
 }

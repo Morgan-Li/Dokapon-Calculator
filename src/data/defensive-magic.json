@@ -1,78 +1,97 @@
 {
   "M Guard": {
     "name": "M Guard",
-    "power": 0.2
+    "power": 0.2,
+    "description": "Reduces magic damage taken by 20%"
   },
   "M Guard+": {
     "name": "M Guard+",
-    "power": 0.6
+    "power": 0.6,
+    "description": "Reduces magic damage taken by 60%"
   },
   "M Guard DX": {
     "name": "M Guard DX",
-    "power": 0.9
+    "power": 0.9,
+    "description": "Reduces magic damage taken by 90%"
   },
   "Refresh": {
     "name": "Refresh",
-    "power": 0.2
+    "power": 0.2,
+    "description": "Recovers 10%~30% of max HP"
   },
   "Refresh+": {
     "name": "Refresh+",
-    "power": 0.35
+    "power": 0.35,
+    "description": "Recovers 40%~60% of max HP"
   },
   "Refresh DX": {
     "name": "Refresh DX",
-    "power": 0.5
+    "power": 0.5,
+    "description": "Fully heals the user"
   },
   "Super Cure": {
     "name": "Super Cure",
-    "power": 0.5
+    "power": 0.5,
+    "description": "Removes negative status conditions from the user"
   },
   "Seal Magic": {
     "name": "Seal Magic",
-    "power": 0.3
+    "power": 0.3,
+    "description": "Seals the opponent's offensive magic"
   },
   "Seal Magic+": {
     "name": "Seal Magic+",
-    "power": 0.5
+    "power": 0.5,
+    "description": "Seals both the opponent's offensive and defensive magic"
   },
   "Shock": {
     "name": "Shock",
-    "power": 0.6
+    "power": 0.6,
+    "description": "Stuns the opponent"
   },
   "Mirror": {
     "name": "Mirror",
-    "power": 0.5
+    "power": 0.5,
+    "description": "Reflects incoming damage back at the attacker"
   },
   "MG Charge": {
     "name": "MG Charge",
-    "power": 0.35
+    "power": 0.35,
+    "description": "Raises user's magic stat by 50%"
   },
   "AT Charge": {
     "name": "AT Charge",
-    "power": 0.35
+    "power": 0.35,
+    "description": "Raises user's attack stat by 50%"
   },
   "DF Charge": {
     "name": "DF Charge",
-    "power": 0.35
+    "power": 0.35,
+    "description": "Raises user's defense stat by 50%"
   },
   "SP Charge": {
     "name": "SP Charge",
-    "power": 0.35
+    "power": 0.35,
+    "description": "Raises user's speed stat by 50%"
   },
   "Charge All": {
     "name": "Charge All",
-    "power": 0.6
+    "power": 0.6,
+    "description": "Raises all stats by 100%"
   },
   "Charm": {
     "name": "Charm",
-    "power": 0.7
+    "power": 0.7,
+    "description": "Seals opponent's attack and counter commands"
   },
   "Bounce": {
     "name": "Bounce",
-    "power": 0
+    "power": 0,
+    "description": "Redirects opponent's damage back to them"
   },
   "Super Bounce": {
     "name": "Super Bounce",
-    "power": 0
+    "power": 0,
+    "description": "Redirects opponent's damage back to them at 400% power"
   }
 }

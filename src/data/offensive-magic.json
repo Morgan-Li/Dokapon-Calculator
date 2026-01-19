@@ -1,94 +1,117 @@
 {
   "Scorch": {
     "name": "Scorch",
-    "power": 1.95
+    "power": 1.95,
+    "description": "Fire spell that may reduce opponent's Defense by 25%"
   },
   "Scorcher": {
     "name": "Scorcher",
-    "power": 2.65
+    "power": 2.65,
+    "description": "Enhanced fire spell that may reduce opponent's Defense by 25%"
   },
   "Giga Blaze": {
     "name": "Giga Blaze",
-    "power": 3.7
+    "power": 3.7,
+    "description": "Powerful fire spell that may reduce opponent's Defense by 25%"
   },
   "Zap": {
     "name": "Zap",
-    "power": 2.25
+    "power": 2.25,
+    "description": "Lightning spell that may reduce opponent's Magic by 25%"
   },
   "Zapper": {
     "name": "Zapper",
-    "power": 3.15
+    "power": 3.15,
+    "description": "Enhanced lightning spell that may reduce opponent's Magic by 25%"
   },
   "Lectro Beam": {
     "name": "Lectro Beam",
-    "power": 4.45
+    "power": 4.45,
+    "description": "Powerful lightning spell that may reduce opponent's Magic by 25%"
   },
   "Chill": {
     "name": "Chill",
-    "power": 2.1
+    "power": 2.1,
+    "description": "Ice spell that may reduce opponent's Attack by 25%"
   },
   "Chiller": {
     "name": "Chiller",
-    "power": 2.9
+    "power": 2.9,
+    "description": "Enhanced ice spell that may reduce opponent's Attack by 25%"
   },
   "Ice Barrage": {
     "name": "Ice Barrage",
-    "power": 4.1
+    "power": 4.1,
+    "description": "Powerful ice spell that may reduce opponent's Attack by 25%"
   },
   "Gust": {
     "name": "Gust",
-    "power": 2.45
+    "power": 2.45,
+    "description": "Wind spell that may reduce opponent's Speed by 25%"
   },
   "Guster": {
     "name": "Guster",
-    "power": 3.2
+    "power": 3.2,
+    "description": "Enhanced wind spell that may reduce opponent's Speed by 25%"
   },
   "F5 Storm": {
     "name": "F5 Storm",
-    "power": 4.75
+    "power": 4.75,
+    "description": "Powerful wind spell that may reduce opponent's Speed by 25%"
   },
   "Mirror Image": {
     "name": "Mirror Image",
-    "power": 2.4
+    "power": 2.4,
+    "description": "Physical magic with no additional effect"
   },
   "Teleport": {
     "name": "Teleport",
-    "power": 3.0
+    "power": 3.0,
+    "description": "Physical magic dealing damage only"
   },
   "Aurora": {
     "name": "Aurora",
-    "power": 5.0
+    "power": 5.0,
+    "description": "Light magic that reduces all opponent stats by 50%"
   },
   "Curse": {
     "name": "Curse",
-    "power": 1.6
+    "power": 1.6,
+    "description": "Dark magic that curses the opponent"
   },
   "Sleepy": {
     "name": "Sleepy",
-    "power": 1.1
+    "power": 1.1,
+    "description": "Dark magic that induces sleep status"
   },
   "Blind": {
     "name": "Blind",
-    "power": 1.4
+    "power": 1.4,
+    "description": "Dark magic that causes blindness"
   },
   "Banish": {
     "name": "Banish",
-    "power": 2.5
+    "power": 2.5,
+    "description": "Dark magic that kills opponent but leaves caster at 1 HP"
   },
   "Drain": {
     "name": "Drain",
-    "power": 0
+    "power": 0,
+    "description": "Steals 50% of opponent's current HP"
   },
   "Swap": {
     "name": "Swap",
-    "power": 0
+    "power": 0,
+    "description": "Exchanges HP values between combatants"
   },
   "Pickpocket": {
     "name": "Pickpocket",
-    "power": 1.5
+    "power": 1.5,
+    "description": "Steals 25% of opponent's gold"
   },
   "Rust": {
     "name": "Rust",
-    "power": 3.6
+    "power": 3.6,
+    "description": "Breaks random opponent equipment"
   }
 }

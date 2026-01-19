@@ -5,7 +5,8 @@ import { DamageTable } from './components/DamageTable'
 import { Dropdown } from './components/Dropdown'
 import { ImageAlignment } from './components/ImageAlignment'
 import { OCRDebugger } from './components/OCRDebugger'
-import { isProficient, getJobNames, getWeaponNames, getDefensiveMagicNames, getOffensiveMagicNames } from './core/reference/loader'
+import { isProficient, getJobNames, getWeaponNames, getDefensiveMagicNames, getOffensiveMagicNames, getBattleSkillNames } from './core/reference/loader'
+import { EffectDisplay } from './components/EffectDisplay'
 import { extractCharacterStats, extractBattleStats } from './core/ocr/parser'
 import { matchJob, matchWeapon, matchOffensiveMagic, matchDefensiveMagic } from './core/reference/matcher'
 import exampleDokapon from './assets/example-Dokapon.png'
@@ -27,6 +28,7 @@ function App() {
   const weapons = useMemo(() => getWeaponNames(), []);
   const defensiveMagic = useMemo(() => getDefensiveMagicNames(), []);
   const offensiveMagic = useMemo(() => getOffensiveMagicNames(), []);
+  const battleSkills = useMemo(() => getBattleSkillNames(), []);
 
   // Mock character state (will be populated by OCR later)
   const [leftChar, setLeftChar] = useState<Partial<CharacterState>>({
@@ -37,9 +39,10 @@ function App() {
     mg: 10,
     sp: 12,
     job: 'Warrior',
-    weapon: 'Rapier',
-    defensiveMagic: 'M Guard',
+    weapon: undefined,
+    defensiveMagic: undefined,
     offensiveMagic: undefined,
+    battleSkill: undefined,
   });
 
   const [rightChar, setRightChar] = useState<Partial<CharacterState>>({
@@ -50,9 +53,10 @@ function App() {
     mg: 18,
     sp: 14,
     job: 'Magician',
-    weapon: 'Fairy Wand',
-    defensiveMagic: 'M Guard+',
-    offensiveMagic: 'Scorch',
+    weapon: undefined,
+    defensiveMagic: undefined,
+    offensiveMagic: undefined,
+    battleSkill: undefined,
   });
 
   const loadImageFile = (file: File) => {
@@ -570,6 +574,21 @@ function App() {
                       options={offensiveMagic}
                       placeholder="None"
                     />
+
+                    <Dropdown
+                      label="Battle Skill"
+                      value={leftChar.battleSkill}
+                      onChange={(value) => setLeftChar({ ...leftChar, battleSkill: value })}
+                      options={battleSkills}
+                      placeholder="None"
+                    />
+
+                    <EffectDisplay
+                      defensiveMagic={leftChar.defensiveMagic}
+                      offensiveMagic={leftChar.offensiveMagic}
+                      battleSkill={leftChar.battleSkill}
+                      color="text-blue-400"
+                    />
                   </div>
                 </div>
 
@@ -657,6 +676,21 @@ function App() {
                       onChange={(value) => setRightChar({ ...rightChar, offensiveMagic: value })}
                       options={offensiveMagic}
                       placeholder="None"
+                    />
+
+                    <Dropdown
+                      label="Battle Skill"
+                      value={rightChar.battleSkill}
+                      onChange={(value) => setRightChar({ ...rightChar, battleSkill: value })}
+                      options={battleSkills}
+                      placeholder="None"
+                    />
+
+                    <EffectDisplay
+                      defensiveMagic={rightChar.defensiveMagic}
+                      offensiveMagic={rightChar.offensiveMagic}
+                      battleSkill={rightChar.battleSkill}
+                      color="text-red-400"
                     />
                   </div>
                 </div>

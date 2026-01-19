@@ -1,0 +1,130 @@
+{
+  "Sneak Hit": {
+    "name": "Sneak Hit",
+    "description": "9/10 chance to reduce opponent's current HP by 1/2, 1/10 chance to instantly kill"
+  },
+  "Thunder": {
+    "name": "Thunder",
+    "description": "Reduces opponent's HP by half with a chance to destroy equipment"
+  },
+  "Soul Fire": {
+    "name": "Soul Fire",
+    "description": "Boosts Attack by 50% each turn after use"
+  },
+  "Celerity": {
+    "name": "Celerity",
+    "description": "Increases Speed by 50%"
+  },
+  "Prayer": {
+    "name": "Prayer",
+    "description": "Heals 50% of total HP and cures some status ailments"
+  },
+  "Virus": {
+    "name": "Virus",
+    "description": "3/4 chance to reduce opponent's AT, DF, MG, and SP by 25%"
+  },
+  "Sing": {
+    "name": "Sing",
+    "description": "3/4 chance to confuse the opponent for 1~3 turns"
+  },
+  "Glory": {
+    "name": "Glory",
+    "description": "Forces opponent surrender; works on adventurers and can earn bounty rewards"
+  },
+  "Howl": {
+    "name": "Howl",
+    "description": "Inflicts Fear status on opponent"
+  },
+  "Heal": {
+    "name": "Heal",
+    "description": "Recovers all HP"
+  },
+  "Will Bind": {
+    "name": "Will Bind",
+    "description": "Seals opponent's Counter and Give Up commands temporarily"
+  },
+  "Guard": {
+    "name": "Guard",
+    "description": "Randomly increases multiple stats by 50%"
+  },
+  "Afterburn": {
+    "name": "Afterburn",
+    "description": "Boosts all stats by 50% but halves user's HP afterward"
+  },
+  "Restrict": {
+    "name": "Restrict",
+    "description": "50% chance to seal a random battle command temporarily"
+  },
+  "Power Poke": {
+    "name": "Power Poke",
+    "description": "High chance to reduce HP by 25% or instant kill"
+  },
+  "Delete": {
+    "name": "Delete",
+    "description": "Destroys opponent's equipment or items"
+  },
+  "Charge": {
+    "name": "Charge",
+    "description": "Increases Attack 50% until physical attack used; stackable"
+  },
+  "Chakra": {
+    "name": "Chakra",
+    "description": "Boosts Attack and Magic by 50% for battle"
+  },
+  "Overlord": {
+    "name": "Overlord",
+    "description": "50% chance to triple or halve Attack"
+  },
+  "Copy": {
+    "name": "Copy",
+    "description": "Duplicates opponent's superior stats"
+  },
+  "Poison": {
+    "name": "Poison",
+    "description": "90% chance to poison opponent"
+  },
+  "Play Dumb": {
+    "name": "Play Dumb",
+    "description": "Nullifies magic attacks for 1-3 turns"
+  },
+  "Escape": {
+    "name": "Escape",
+    "description": "Exit battle with invincibility until next encounter"
+  },
+  "Steal": {
+    "name": "Steal",
+    "description": "25% chance to take random item from opponent"
+  },
+  "Rob": {
+    "name": "Rob",
+    "description": "50% chance to steal all gold, items, and field magic"
+  },
+  "Transform": {
+    "name": "Transform",
+    "description": "Become opponent, copying stats and abilities"
+  },
+  "Muscle": {
+    "name": "Muscle",
+    "description": "Increases Attack and Defense by 50%"
+  },
+  "Pierce": {
+    "name": "Pierce",
+    "description": "Physical attacks ignore opponent's Defense"
+  },
+  "Meditate": {
+    "name": "Meditate",
+    "description": "Boosts Magic 50% until magical attack used; stackable"
+  },
+  "Toughen": {
+    "name": "Toughen",
+    "description": "Doubles Defense"
+  },
+  "Alchemy": {
+    "name": "Alchemy",
+    "description": "Generates money from damage inflicted"
+  },
+  "????": {
+    "name": "????",
+    "description": "Becomes a random adventurer skill each battle"
+  }
+}
