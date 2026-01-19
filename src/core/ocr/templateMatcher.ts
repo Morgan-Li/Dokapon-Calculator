@@ -288,7 +288,7 @@ async function recognizeDigitAt(
 
     // CONFIGURABLE: Choose matching algorithm
     type MatchingAlgorithm = 'ncc' | 'ssd' | 'hamming' | 'ensemble';
-    const algorithm: MatchingAlgorithm = 'ncc'; // NCC is most robust to misalignment
+    const algorithm = 'ncc' as MatchingAlgorithm; // NCC is most robust to misalignment
 
     // Ensemble mode: Try multiple algorithms and pick the one with highest confidence
     const useEnsemble = algorithm === 'ensemble';
