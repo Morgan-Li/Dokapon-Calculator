@@ -13,10 +13,14 @@ interface Transform {
   scale: number;
 }
 
+type ResizeHandle = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | null;
+
 export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: ImageAlignmentProps) {
   const [transform, setTransform] = useState<Transform>({ x: 0, y: 0, scale: 1 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [activeHandle, setActiveHandle] = useState<ResizeHandle>(null);
+  const [resizeStart, setResizeStart] = useState({ mouseX: 0, mouseY: 0, transform: { x: 0, y: 0, scale: 1 } });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -108,10 +112,47 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
       }
     });
 
+    // Draw resize handles on the image
+    const currentImg = imageRef.current;
+    if (currentImg) {
+      const imgWidth = currentImg.width * transform.scale;
+      const imgHeight = currentImg.height * transform.scale;
+      const handleSize = 12;
+
+      ctx.fillStyle = '#3b82f6';
+      ctx.strokeStyle = '#1e40af';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+
+      // Define handle positions
+      const handles = [
+        { id: 'nw', x: transform.x - handleSize/2, y: transform.y - handleSize/2 },
+        { id: 'n', x: transform.x + imgWidth/2 - handleSize/2, y: transform.y - handleSize/2 },
+        { id: 'ne', x: transform.x + imgWidth - handleSize/2, y: transform.y - handleSize/2 },
+        { id: 'e', x: transform.x + imgWidth - handleSize/2, y: transform.y + imgHeight/2 - handleSize/2 },
+        { id: 'se', x: transform.x + imgWidth - handleSize/2, y: transform.y + imgHeight - handleSize/2 },
+        { id: 's', x: transform.x + imgWidth/2 - handleSize/2, y: transform.y + imgHeight - handleSize/2 },
+        { id: 'sw', x: transform.x - handleSize/2, y: transform.y + imgHeight - handleSize/2 },
+        { id: 'w', x: transform.x - handleSize/2, y: transform.y + imgHeight/2 - handleSize/2 },
+      ];
+
+      handles.forEach(handle => {
+        ctx.fillRect(handle.x, handle.y, handleSize, handleSize);
+        ctx.strokeRect(handle.x, handle.y, handleSize, handleSize);
+      });
+
+      // Draw image border
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([]);
+      ctx.strokeRect(transform.x, transform.y, imgWidth, imgHeight);
+    }
+
     // Draw field boxes with labels - fixed on canvas, centered
     ctx.setLineDash([]);
     ctx.lineWidth = 1.5;
     ctx.font = '12px monospace';
+    ctx.strokeStyle = 'rgba(255, 0, 0, 0.9)';
     ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
 
     const drawLabeledBox = (label: string, guide: { x: number; y: number; w: number; h: number }) => {
@@ -128,7 +169,10 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
     const fieldLabels: Record<string, string> = {
       Job: 'Job',
       HP: 'HP',
-      Stats: 'AT/DF/MG/SP',
+      ATBox: 'AT',
+      DFBox: 'DF',
+      MGBox: 'MG',
+      SPBox: 'SP',
       Weapon: 'Weapon',
       OffensiveMagic: 'Off. Magic',
       DefensiveMagic: 'Def. Magic',
@@ -146,22 +190,172 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
     });
   }, [transform]);
 
+  // Detect which handle (if any) is at the given canvas position
+  const getHandleAtPosition = (canvasX: number, canvasY: number): ResizeHandle => {
+    const img = imageRef.current;
+    if (!img) return null;
+
+    const imgWidth = img.width * transform.scale;
+    const imgHeight = img.height * transform.scale;
+    const handleSize = 16; // Slightly larger hit area than visual
+
+    const handles: { id: ResizeHandle; x: number; y: number }[] = [
+      { id: 'nw', x: transform.x, y: transform.y },
+      { id: 'n', x: transform.x + imgWidth/2, y: transform.y },
+      { id: 'ne', x: transform.x + imgWidth, y: transform.y },
+      { id: 'e', x: transform.x + imgWidth, y: transform.y + imgHeight/2 },
+      { id: 'se', x: transform.x + imgWidth, y: transform.y + imgHeight },
+      { id: 's', x: transform.x + imgWidth/2, y: transform.y + imgHeight },
+      { id: 'sw', x: transform.x, y: transform.y + imgHeight },
+      { id: 'w', x: transform.x, y: transform.y + imgHeight/2 },
+    ];
+
+    for (const handle of handles) {
+      if (
+        canvasX >= handle.x - handleSize/2 &&
+        canvasX <= handle.x + handleSize/2 &&
+        canvasY >= handle.y - handleSize/2 &&
+        canvasY <= handle.y + handleSize/2
+      ) {
+        return handle.id;
+      }
+    }
+    return null;
+  };
+
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX - transform.x, y: e.clientY - transform.y });
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const canvasX = e.clientX - rect.left;
+    const canvasY = e.clientY - rect.top;
+
+    const handle = getHandleAtPosition(canvasX, canvasY);
+
+    if (handle) {
+      setActiveHandle(handle);
+      setResizeStart({
+        mouseX: e.clientX,
+        mouseY: e.clientY,
+        transform: { ...transform },
+      });
+    } else {
+      setIsDragging(true);
+      setDragStart({ x: e.clientX - transform.x, y: e.clientY - transform.y });
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDragging) return;
-    setTransform({
-      ...transform,
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y,
-    });
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Update cursor based on hover
+    const rect = canvas.getBoundingClientRect();
+    const canvasX = e.clientX - rect.left;
+    const canvasY = e.clientY - rect.top;
+    const handle = getHandleAtPosition(canvasX, canvasY);
+
+    if (handle) {
+      const cursors: Record<string, string> = {
+        nw: 'nwse-resize', ne: 'nesw-resize', se: 'nwse-resize', sw: 'nesw-resize',
+        n: 'ns-resize', s: 'ns-resize', e: 'ew-resize', w: 'ew-resize',
+      };
+      canvas.style.cursor = cursors[handle] || 'move';
+    } else {
+      canvas.style.cursor = 'move';
+    }
+
+    if (activeHandle) {
+      const img = imageRef.current;
+      if (!img) return;
+
+      const deltaX = e.clientX - resizeStart.mouseX;
+      const deltaY = e.clientY - resizeStart.mouseY;
+      const startTransform = resizeStart.transform;
+      const imgWidth = img.width * startTransform.scale;
+      const imgHeight = img.height * startTransform.scale;
+
+      let newX = startTransform.x;
+      let newY = startTransform.y;
+      let newScale = startTransform.scale;
+
+      // Calculate new dimensions based on which handle is being dragged
+      switch (activeHandle) {
+        case 'se': {
+          // Scale from top-left corner (simplest case)
+          const newWidth = Math.max(50, imgWidth + deltaX);
+          newScale = newWidth / img.width;
+          break;
+        }
+        case 'nw': {
+          // Scale from bottom-right corner
+          const newWidth = Math.max(50, imgWidth - deltaX);
+          newScale = newWidth / img.width;
+          const scaledWidth = img.width * newScale;
+          const scaledHeight = img.height * newScale;
+          newX = startTransform.x + imgWidth - scaledWidth;
+          newY = startTransform.y + imgHeight - scaledHeight;
+          break;
+        }
+        case 'ne': {
+          // Scale from bottom-left corner
+          const newWidth = Math.max(50, imgWidth + deltaX);
+          newScale = newWidth / img.width;
+          const scaledHeight = img.height * newScale;
+          newY = startTransform.y + imgHeight - scaledHeight;
+          break;
+        }
+        case 'sw': {
+          // Scale from top-right corner
+          const newWidth = Math.max(50, imgWidth - deltaX);
+          newScale = newWidth / img.width;
+          const scaledWidth = img.width * newScale;
+          newX = startTransform.x + imgWidth - scaledWidth;
+          break;
+        }
+        case 'e': {
+          const newWidth = Math.max(50, imgWidth + deltaX);
+          newScale = newWidth / img.width;
+          break;
+        }
+        case 'w': {
+          const newWidth = Math.max(50, imgWidth - deltaX);
+          newScale = newWidth / img.width;
+          const scaledWidth = img.width * newScale;
+          newX = startTransform.x + imgWidth - scaledWidth;
+          break;
+        }
+        case 'n': {
+          const newHeight = Math.max(50, imgHeight - deltaY);
+          newScale = newHeight / img.height;
+          const scaledHeight = img.height * newScale;
+          newY = startTransform.y + imgHeight - scaledHeight;
+          break;
+        }
+        case 's': {
+          const newHeight = Math.max(50, imgHeight + deltaY);
+          newScale = newHeight / img.height;
+          break;
+        }
+      }
+
+      // Clamp scale to reasonable bounds
+      newScale = Math.max(0.1, Math.min(5, newScale));
+
+      setTransform({ x: newX, y: newY, scale: newScale });
+    } else if (isDragging) {
+      setTransform({
+        ...transform,
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y,
+      });
+    }
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    setActiveHandle(null);
   };
 
   const handleWheel = (e: React.WheelEvent<HTMLCanvasElement>) => {
@@ -242,7 +436,7 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
       <div className="bg-gray-800 p-6 rounded-lg max-w-6xl w-full mx-4">
         <h2 className="text-2xl font-bold mb-4 text-white">Align Screenshot</h2>
         <p className="text-gray-300 mb-4">
-          Drag to move, scroll to zoom. Align the character cards with the red overlay boxes.
+          Drag the blue handles to resize, or drag the image to move it. Align the character cards with the red overlay boxes.
         </p>
 
         <div ref={containerRef} className="relative bg-gray-900 rounded-lg overflow-hidden mb-4">
@@ -277,9 +471,10 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
         <div className="mt-4 text-sm text-gray-400">
           <p><strong>Tips:</strong></p>
           <ul className="list-disc list-inside mt-2">
+            <li>Center the Weapon and Magic fields first. Do not include the Symbol in the outline</li>
+            <li>Drag the blue corner/edge handles to resize the image</li>
+            <li>Click and drag anywhere else to reposition</li>
             <li>Use mouse wheel to zoom in/out</li>
-            <li>Click and drag to reposition</li>
-            <li>Align the character info boxes with the red overlay guides</li>
             <li>The Job, HP, and stat numbers should fit within the labeled boxes</li>
           </ul>
         </div>

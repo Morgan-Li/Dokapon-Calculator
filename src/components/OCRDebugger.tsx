@@ -232,7 +232,7 @@ export function OCRDebugger({ imageData, onClose }: OCRDebuggerProps) {
                                 }`}
                               >
                                 <div className="text-xs font-semibold text-white mb-1">
-                                  {config.name} {isBest && '⭐'}
+                                  {config.name} 
                                 </div>
                                 <div className="text-xs text-gray-400 mb-2">
                                   {config.description}
