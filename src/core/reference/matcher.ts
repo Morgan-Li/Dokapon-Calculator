@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js';
 import { FuzzyMatch } from '../../types';
-import { getJobNames, getWeaponNames, getDefensiveMagicNames, getOffensiveMagicNames } from './loader';
+import { getJobNames, getWeaponNames, getDefensiveMagicNames, getOffensiveMagicNames, getBattleSkillNames } from './loader';
 
 // Fuzzy matching configuration
 const FUSE_OPTIONS = {
@@ -15,6 +15,7 @@ let jobFuse: Fuse<{ name: string }> | null = null;
 let weaponFuse: Fuse<{ name: string }> | null = null;
 let defensiveMagicFuse: Fuse<{ name: string }> | null = null;
 let offensiveMagicFuse: Fuse<{ name: string }> | null = null;
+let battleSkillFuse: Fuse<{ name: string }> | null = null;
 
 function initFuseInstances() {
   if (!jobFuse) {
@@ -38,6 +39,12 @@ function initFuseInstances() {
   if (!offensiveMagicFuse) {
     offensiveMagicFuse = new Fuse(
       getOffensiveMagicNames().map(name => ({ name })),
+      FUSE_OPTIONS
+    );
+  }
+  if (!battleSkillFuse) {
+    battleSkillFuse = new Fuse(
+      getBattleSkillNames().map(name => ({ name })),
       FUSE_OPTIONS
     );
   }
@@ -95,4 +102,10 @@ export function matchDefensiveMagic(ocrText: string): FuzzyMatch | null {
 export function matchOffensiveMagic(ocrText: string): FuzzyMatch | null {
   initFuseInstances();
   return fuzzyMatch(ocrText, offensiveMagicFuse!);
+}
+
+// Match battle skill name
+export function matchBattleSkill(ocrText: string): FuzzyMatch | null {
+  initFuseInstances();
+  return fuzzyMatch(ocrText, battleSkillFuse!);
 }

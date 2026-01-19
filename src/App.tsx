@@ -8,7 +8,7 @@ import { OCRDebugger } from './components/OCRDebugger'
 import { isProficient, getJobNames, getWeaponNames, getDefensiveMagicNames, getOffensiveMagicNames, getBattleSkillNames } from './core/reference/loader'
 import { EffectDisplay } from './components/EffectDisplay'
 import { extractCharacterStats, extractBattleStats } from './core/ocr/parser'
-import { matchJob, matchWeapon, matchOffensiveMagic, matchDefensiveMagic } from './core/reference/matcher'
+import { matchJob, matchWeapon, matchOffensiveMagic, matchDefensiveMagic, matchBattleSkill } from './core/reference/matcher'
 import exampleDokapon from './assets/example-Dokapon.png'
 import exampleBattleDokapon from './assets/example-battle-dokapon.png'
 
@@ -131,6 +131,10 @@ function App() {
         const rightOffensiveMatch = matchOffensiveMagic(rightStats.magic);
         const rightDefensiveMatch = matchDefensiveMagic(rightStats.magic);
 
+        // Match battle skills
+        const leftBattleSkillMatch = matchBattleSkill(leftStats.battleSkill);
+        const rightBattleSkillMatch = matchBattleSkill(rightStats.battleSkill);
+
         console.log('Left magic matches:', {
           offensive: leftOffensiveMatch,
           defensive: leftDefensiveMatch
@@ -139,20 +143,29 @@ function App() {
           offensive: rightOffensiveMatch,
           defensive: rightDefensiveMatch
         });
+        console.log('Battle skill matches:', {
+          left: leftBattleSkillMatch,
+          right: rightBattleSkillMatch
+        });
 
         // Determine which magic type each side has based on best match confidence
         const leftIsOffensive = (leftOffensiveMatch?.confidence ?? 0) > (leftDefensiveMatch?.confidence ?? 0);
         const rightIsOffensive = (rightOffensiveMatch?.confidence ?? 0) > (rightDefensiveMatch?.confidence ?? 0);
 
         // Infer perspective: if left has offensive magic, left is attacking
-        // If left has defensive magic, right is attacking
+        // If left has defensive magic, right is attacking (you are defending)
         let inferredPerspective: 'leftAttacks' | 'rightAttacks' = 'leftAttacks';
-        if (leftIsOffensive && !rightIsOffensive) {
-          inferredPerspective = 'leftAttacks';
-        } else if (!leftIsOffensive && rightIsOffensive) {
+        const leftHasDefensive = leftDefensiveMatch && leftDefensiveMatch.confidence > 0.5;
+        const leftHasOffensive = leftOffensiveMatch && leftOffensiveMatch.confidence > 0.5;
+
+        if (leftHasDefensive && !leftHasOffensive) {
+          // Left side has defensive magic -> you are defending
           inferredPerspective = 'rightAttacks';
+        } else if (leftHasOffensive) {
+          // Left side has offensive magic -> you are attacking
+          inferredPerspective = 'leftAttacks';
         }
-        // If both or neither match clearly, default to leftAttacks
+        // If neither match clearly, default to leftAttacks
 
         console.log(`Inferred perspective from magic types: ${inferredPerspective}`);
 
@@ -162,6 +175,7 @@ function App() {
           ...leftChar,
           offensiveMagic: leftIsOffensive ? (leftOffensiveMatch?.match ?? leftChar.offensiveMagic) : leftChar.offensiveMagic,
           defensiveMagic: !leftIsOffensive ? (leftDefensiveMatch?.match ?? leftChar.defensiveMagic) : leftChar.defensiveMagic,
+          battleSkill: leftBattleSkillMatch?.match ?? leftChar.battleSkill,
           hpCurrent: leftStats.hp ?? leftChar.hpCurrent,
           hpMax: leftStats.hp ?? leftChar.hpMax,
           at: leftStats.at ?? leftChar.at,
@@ -175,6 +189,7 @@ function App() {
           ...rightChar,
           offensiveMagic: rightIsOffensive ? (rightOffensiveMatch?.match ?? rightChar.offensiveMagic) : rightChar.offensiveMagic,
           defensiveMagic: !rightIsOffensive ? (rightDefensiveMatch?.match ?? rightChar.defensiveMagic) : rightChar.defensiveMagic,
+          battleSkill: rightBattleSkillMatch?.match ?? rightChar.battleSkill,
           hpCurrent: rightStats.hp ?? rightChar.hpCurrent,
           hpMax: rightStats.hp ?? rightChar.hpMax,
           at: rightStats.at ?? rightChar.at,

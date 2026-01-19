@@ -270,18 +270,20 @@ export async function extractBattleStats(
   mg: number | null;
   sp: number | null;
   magic: string;
+  battleSkill: string;
 }> {
   const rois = side === 'left' ? BATTLE_LEFT_ROIS : BATTLE_RIGHT_ROIS;
 
   // Extract numeric fields using flood fill + Tesseract
   // For battle mode, we extract stats from the center display
-  const [hp, atText, dfText, mgText, spText, magic] = await Promise.all([
+  const [hp, atText, dfText, mgText, spText, magic, battleSkill] = await Promise.all([
     extractHPFromROI(imageData, rois.hp),
     extractNumberFromROI(imageData, rois.at),
     extractNumberFromROI(imageData, rois.df),
     extractNumberFromROI(imageData, rois.mg),
     extractNumberFromROI(imageData, rois.sp),
     extractTextFromROI(imageData, rois.magic),
+    extractTextFromROI(imageData, rois.battleSkill),
   ]);
 
   return {
@@ -291,6 +293,7 @@ export async function extractBattleStats(
     mg: mgText ? parseInt(mgText) : null,
     sp: spText ? parseInt(spText) : null,
     magic,
+    battleSkill,
   };
 }
 

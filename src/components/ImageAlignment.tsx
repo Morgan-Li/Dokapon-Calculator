@@ -182,6 +182,7 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel, scree
       OffensiveMagic: 'Off. Magic',
       DefensiveMagic: 'Def. Magic',
       MagicBox: 'Magic',
+      BattleSkillBox: 'Battle Skill',
       statsArea: 'Stats Area',
     };
 

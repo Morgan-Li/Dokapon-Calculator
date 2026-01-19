@@ -78,6 +78,7 @@ export const BATTLE_LEFT_ROIS: Record<string, ROI> = {
   mg: { x: 720, y: 480, w: 100, h: 40 },             // MG stat
   sp: { x: 720, y: 535, w: 100, h: 40 },             // SP stat
   magic: { x: 480, y: 605, w: 190, h: 45 },          // Magic from left menu
+  battleSkill: { x: 480, y: 830, w: 190, h: 45 },          
 };
 
 // Right character ROIs for battle screen (matches BATTLE_OVERLAY_GUIDES)
@@ -87,7 +88,8 @@ export const BATTLE_RIGHT_ROIS: Record<string, ROI> = {
   df: { x: 865, y: 425, w: 100, h: 40 },             // DF stat
   mg: { x: 865, y: 480, w: 100, h: 40 },             // MG stat
   sp: { x: 865, y: 535, w: 100, h: 40 },             // SP stat
-  magic: { x: 1020, y: 605, w: 190, h: 45 },          // Magic from right menu
+  magic: { x: 1020, y: 605, w: 190, h: 45 },         // Magic from right menu
+  battleSkill: { x: 1020, y: 830, w: 190, h: 45 },          
 };
 
 // Overlay guides for battle screen alignment UI
@@ -110,4 +112,7 @@ export const BATTLE_OVERLAY_GUIDES = {
   // Magic menu areas
   leftMagicBox: { x: 480, y: 605, w: 190, h: 45 },
   rightMagicBox: { x: 1020, y: 605, w: 190, h: 45 },
+  // Battle skill menu areas 
+  leftBattleSkillBox: { x: 480, y: 830, w: 190, h: 45 },
+  rightBattleSkillBox: { x: 1020, y: 830, w: 190, h: 45 },
 };
