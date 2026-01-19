@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
-import { OVERLAY_GUIDES, REFERENCE_WIDTH, REFERENCE_HEIGHT } from '../core/ocr/rois';
+import { OVERLAY_GUIDES, BATTLE_OVERLAY_GUIDES, REFERENCE_WIDTH, REFERENCE_HEIGHT } from '../core/ocr/rois';
+import { ScreenMode } from '../types';
 
 interface ImageAlignmentProps {
   imageData: string;
   onAlignmentComplete: (alignedImageData: string, scale: number) => void;
   onCancel: () => void;
+  screenMode?: ScreenMode;
 }
 
 interface Transform {
@@ -15,7 +17,7 @@ interface Transform {
 
 type ResizeHandle = 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | null;
 
-export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: ImageAlignmentProps) {
+export function ImageAlignment({ imageData, onAlignmentComplete, onCancel, screenMode = 'overworld' }: ImageAlignmentProps) {
   const [transform, setTransform] = useState<Transform>({ x: 0, y: 0, scale: 1 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -100,8 +102,11 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
     ctx.lineWidth = 2;
     ctx.setLineDash([5, 5]);
 
-    // Draw card outlines - fixed on canvas, centered
-    Object.entries(OVERLAY_GUIDES).forEach(([key, guide]) => {
+    // Select the appropriate overlay guides based on screen mode
+    const guides = screenMode === 'battle' ? BATTLE_OVERLAY_GUIDES : OVERLAY_GUIDES;
+
+    // Draw card/area outlines - fixed on canvas, centered
+    Object.entries(guides).forEach(([key, guide]) => {
       if (key.includes('Outline')) {
         ctx.strokeRect(
           guide.x * guideScale + offsetX,
@@ -176,10 +181,12 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
       Weapon: 'Weapon',
       OffensiveMagic: 'Off. Magic',
       DefensiveMagic: 'Def. Magic',
+      MagicBox: 'Magic',
+      statsArea: 'Stats Area',
     };
 
     // Draw all non-outline boxes with their labels
-    Object.entries(OVERLAY_GUIDES).forEach(([key, guide]) => {
+    Object.entries(guides).forEach(([key, guide]) => {
       if (key.includes('Outline')) return;
 
       // Extract field name from key (e.g., "leftJobBox" -> "Job", "rightStatsBox" -> "Stats")
@@ -188,7 +195,7 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
         drawLabeledBox(fieldLabels[fieldName], guide);
       }
     });
-  }, [transform]);
+  }, [transform, screenMode]);
 
   // Detect which handle (if any) is at the given canvas position
   const getHandleAtPosition = (canvasX: number, canvasY: number): ResizeHandle => {
@@ -471,11 +478,21 @@ export function ImageAlignment({ imageData, onAlignmentComplete, onCancel }: Ima
         <div className="mt-4 text-sm text-gray-400">
           <p><strong>Tips:</strong></p>
           <ul className="list-disc list-inside mt-2">
-            <li>Center the Weapon and Magic fields first. Do not include the Symbol in the outline</li>
+            {screenMode === 'battle' ? (
+              <>
+                <li>Align the HP bars with the top corner boxes</li>
+                <li>Center the stat numbers (AT/DF/MG/SP) within the stats area</li>
+                <li>The magic menu areas at the bottom capture offensive/defensive magic</li>
+              </>
+            ) : (
+              <>
+                <li>Center the Weapon and Magic fields first. Do not include the Symbol in the outline</li>
+                <li>The Job, HP, and stat numbers should fit within the labeled boxes</li>
+              </>
+            )}
             <li>Drag the blue corner/edge handles to resize the image</li>
             <li>Click and drag anywhere else to reposition</li>
             <li>Use mouse wheel to zoom in/out</li>
-            <li>The Job, HP, and stat numbers should fit within the labeled boxes</li>
           </ul>
         </div>
       </div>

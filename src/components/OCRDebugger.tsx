@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import Tesseract from 'tesseract.js';
-import { ROI } from '../types';
-import { LEFT_CARD_ROIS, RIGHT_CARD_ROIS, REFERENCE_WIDTH, REFERENCE_HEIGHT } from '../core/ocr/rois';
+import { ROI, ScreenMode } from '../types';
+import { LEFT_CARD_ROIS, RIGHT_CARD_ROIS, BATTLE_LEFT_ROIS, BATTLE_RIGHT_ROIS, REFERENCE_WIDTH, REFERENCE_HEIGHT } from '../core/ocr/rois';
 import { PREPROCESS_PRESETS, PreprocessPreset } from '../core/ocr/presets';
 
 interface OCRDebuggerProps {
   imageData: string;
   onClose: () => void;
+  screenMode?: ScreenMode;
 }
 
 interface PreprocessVariant {
@@ -23,14 +24,14 @@ interface ROIPreview {
   variants: PreprocessVariant[];
 }
 
-export function OCRDebugger({ imageData, onClose }: OCRDebuggerProps) {
+export function OCRDebugger({ imageData, onClose, screenMode = 'overworld' }: OCRDebuggerProps) {
   const [previews, setPreviews] = useState<ROIPreview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     generatePreviews();
-  }, [imageData]);
+  }, [imageData, screenMode]);
 
   const generatePreviews = async () => {
     setIsLoading(true);
@@ -42,9 +43,13 @@ export function OCRDebugger({ imageData, onClose }: OCRDebuggerProps) {
       img.src = imageData;
     });
 
+    // Select ROIs based on screen mode
+    const leftROIs = screenMode === 'battle' ? BATTLE_LEFT_ROIS : LEFT_CARD_ROIS;
+    const rightROIs = screenMode === 'battle' ? BATTLE_RIGHT_ROIS : RIGHT_CARD_ROIS;
+
     const allROIs = [
-      ...Object.entries(LEFT_CARD_ROIS).map(([name, roi]) => ({ name: `Left ${name}`, roi })),
-      ...Object.entries(RIGHT_CARD_ROIS).map(([name, roi]) => ({ name: `Right ${name}`, roi })),
+      ...Object.entries(leftROIs).map(([name, roi]) => ({ name: `Left ${name}`, roi })),
+      ...Object.entries(rightROIs).map(([name, roi]) => ({ name: `Right ${name}`, roi })),
     ];
 
     const previewList: ROIPreview[] = [];
@@ -136,13 +141,17 @@ export function OCRDebugger({ imageData, onClose }: OCRDebuggerProps) {
       ctx.fillText(name, roi.x, roi.y - 5);
     };
 
+    // Select ROIs based on screen mode
+    const leftROIs = screenMode === 'battle' ? BATTLE_LEFT_ROIS : LEFT_CARD_ROIS;
+    const rightROIs = screenMode === 'battle' ? BATTLE_RIGHT_ROIS : RIGHT_CARD_ROIS;
+
     // Draw left card ROIs in green
-    Object.entries(LEFT_CARD_ROIS).forEach(([name, roi]) => {
+    Object.entries(leftROIs).forEach(([name, roi]) => {
       drawROI(name, roi, 'rgba(0, 255, 0, 0.9)');
     });
 
     // Draw right card ROIs in cyan
-    Object.entries(RIGHT_CARD_ROIS).forEach(([name, roi]) => {
+    Object.entries(rightROIs).forEach(([name, roi]) => {
       drawROI(name, roi, 'rgba(0, 255, 255, 0.9)');
     });
   };

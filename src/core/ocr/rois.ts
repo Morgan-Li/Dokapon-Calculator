@@ -58,3 +58,56 @@ export const OVERLAY_GUIDES = {
   leftDefensiveMagicBox: { x: 190, y: 785, w: 265, h: 40 },
   rightDefensiveMagicBox: { x: 730, y: 785, w: 265, h: 40 },
 };
+
+// ============================================================
+// BATTLE SCREEN ROI DEFINITIONS
+// For battle view screenshots (different layout than overworld)
+// ============================================================
+
+// Battle screen uses the same reference dimensions for consistency
+// The battle screen layout has:
+// - HP bars at top corners
+// - Stats in center (left values vs right values)
+// - Action menus at bottom (left = attacker, right = defender)
+
+// Left character ROIs for battle screen (matches BATTLE_OVERLAY_GUIDES)
+export const BATTLE_LEFT_ROIS: Record<string, ROI> = {
+  hp: { x: 515, y: 298, w: 90, h: 30 },              // HP numbers from top-left bar
+  at: { x: 720, y: 365, w: 100, h: 40 },             // AT stat (left number in center)
+  df: { x: 720, y: 425, w: 100, h: 40 },             // DF stat
+  mg: { x: 720, y: 480, w: 100, h: 40 },             // MG stat
+  sp: { x: 720, y: 535, w: 100, h: 40 },             // SP stat
+  magic: { x: 480, y: 605, w: 190, h: 45 },          // Magic from left menu
+};
+
+// Right character ROIs for battle screen (matches BATTLE_OVERLAY_GUIDES)
+export const BATTLE_RIGHT_ROIS: Record<string, ROI> = {
+  hp: { x: 975, y: 298, w: 90, h: 30 },              // HP numbers from top-right bar
+  at: { x: 865, y: 365, w: 100, h: 40 },             // AT stat (right number in center)
+  df: { x: 865, y: 425, w: 100, h: 40 },             // DF stat
+  mg: { x: 865, y: 480, w: 100, h: 40 },             // MG stat
+  sp: { x: 865, y: 535, w: 100, h: 40 },             // SP stat
+  magic: { x: 1020, y: 605, w: 190, h: 45 },          // Magic from right menu
+};
+
+// Overlay guides for battle screen alignment UI
+export const BATTLE_OVERLAY_GUIDES = {
+  // HP bar areas
+  leftHPBox: { x: 515, y: 298, w: 90, h: 30 },
+  rightHPBox: { x: 975, y: 298, w: 90, h: 30 },
+  // Center stat display area
+  statsAreaOutline: { x: 650, y: 340, w: 500, h: 280 },
+  // Individual stat boxes (left values)
+  leftATBox: { x: 720, y: 365, w: 100, h: 40 },
+  leftDFBox: { x: 720, y: 425, w: 100, h: 40 },
+  leftMGBox: { x: 720, y: 480, w: 100, h: 40 },
+  leftSPBox: { x: 720, y: 535, w: 100, h: 40 },
+  // Individual stat boxes (right values)
+  rightATBox: { x: 865, y: 365, w: 100, h: 40 },
+  rightDFBox: { x: 865, y: 425, w: 100, h: 40 },
+  rightMGBox: { x: 865, y: 480, w: 100, h: 40 },
+  rightSPBox: { x: 865, y: 535, w: 100, h: 40 },
+  // Magic menu areas
+  leftMagicBox: { x: 480, y: 605, w: 190, h: 45 },
+  rightMagicBox: { x: 1020, y: 605, w: 190, h: 45 },
+};

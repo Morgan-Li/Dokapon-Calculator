@@ -2,6 +2,9 @@
 
 export type DefenderReaction = 'Defend' | 'Magic Defend' | 'Counter' | 'None';
 
+// Screen mode for OCR - determines which ROI set to use
+export type ScreenMode = 'overworld' | 'battle';
+
 export interface CharacterState {
   // Raw stats
   hpCurrent: number;

@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react'
-import { CharacterState } from './types'
+import { CharacterState, ScreenMode } from './types'
 import { calculateAllAttackDamage, calculateAllStrikeDamage, calculateAllMagicDamage, calculateAccuracy } from './core/calculator'
 import { DamageTable } from './components/DamageTable'
 import { Dropdown } from './components/Dropdown'
 import { ImageAlignment } from './components/ImageAlignment'
 import { OCRDebugger } from './components/OCRDebugger'
 import { isProficient, getJobNames, getWeaponNames, getDefensiveMagicNames, getOffensiveMagicNames } from './core/reference/loader'
-import { extractCharacterStats } from './core/ocr/parser'
+import { extractCharacterStats, extractBattleStats } from './core/ocr/parser'
 import { matchJob, matchWeapon, matchOffensiveMagic, matchDefensiveMagic } from './core/reference/matcher'
 import exampleDokapon from './assets/example-Dokapon.png'
 
@@ -19,6 +19,7 @@ function App() {
   const [isExtracting, setIsExtracting] = useState(false);
   const [extractionError, setExtractionError] = useState<string | null>(null);
   const [extractionSuccess, setExtractionSuccess] = useState(false);
+  const [screenMode, setScreenMode] = useState<ScreenMode>('overworld');
 
   // Get reference data for dropdowns
   const jobs = useMemo(() => getJobNames(), []);
@@ -106,80 +107,161 @@ function App() {
     setExtractionSuccess(false);
 
     try {
-      console.log('Starting OCR extraction...');
+      console.log(`Starting OCR extraction in ${screenMode} mode...`);
 
-      // Extract stats from both character cards
-      const [leftStats, rightStats] = await Promise.all([
-        extractCharacterStats(imageToUse, 'left'),
-        extractCharacterStats(imageToUse, 'right'),
-      ]);
+      if (screenMode === 'battle') {
+        // Battle mode extraction
+        const [leftStats, rightStats] = await Promise.all([
+          extractBattleStats(imageToUse, 'left'),
+          extractBattleStats(imageToUse, 'right'),
+        ]);
 
-      console.log('Left stats extracted:', leftStats);
-      console.log('Right stats extracted:', rightStats);
+        console.log('Battle left stats extracted:', leftStats);
+        console.log('Battle right stats extracted:', rightStats);
 
-      // Apply fuzzy matching to correct OCR errors
-      const leftJobMatch = matchJob(leftStats.job);
-      const leftWeaponMatch = matchWeapon(leftStats.weapon);
-      const leftOffensiveMagicMatch = matchOffensiveMagic(leftStats.offensiveMagic);
-      const leftDefensiveMagicMatch = matchDefensiveMagic(leftStats.defensiveMagic);
-      const rightJobMatch = matchJob(rightStats.job);
-      const rightWeaponMatch = matchWeapon(rightStats.weapon);
-      const rightOffensiveMagicMatch = matchOffensiveMagic(rightStats.offensiveMagic);
-      const rightDefensiveMagicMatch = matchDefensiveMagic(rightStats.defensiveMagic);
+        // Try to match each side's magic against both offensive and defensive lists
+        // to determine which side is attacking/defending
+        const leftOffensiveMatch = matchOffensiveMagic(leftStats.magic);
+        const leftDefensiveMatch = matchDefensiveMagic(leftStats.magic);
+        const rightOffensiveMatch = matchOffensiveMagic(rightStats.magic);
+        const rightDefensiveMatch = matchDefensiveMagic(rightStats.magic);
 
-      console.log('Job matches:', { left: leftJobMatch, right: rightJobMatch });
-      console.log('Weapon matches:', { left: leftWeaponMatch, right: rightWeaponMatch });
-      console.log('Offensive magic matches:', { left: leftOffensiveMagicMatch, right: rightOffensiveMagicMatch });
-      console.log('Defensive magic matches:', { left: leftDefensiveMagicMatch, right: rightDefensiveMagicMatch });
+        console.log('Left magic matches:', {
+          offensive: leftOffensiveMatch,
+          defensive: leftDefensiveMatch
+        });
+        console.log('Right magic matches:', {
+          offensive: rightOffensiveMatch,
+          defensive: rightDefensiveMatch
+        });
 
-      // Update left character state
-      const newLeftChar = {
-        ...leftChar,
-        job: leftJobMatch?.match ?? leftChar.job,
-        weapon: leftWeaponMatch?.match ?? leftChar.weapon,
-        offensiveMagic: leftOffensiveMagicMatch?.match ?? leftChar.offensiveMagic,
-        defensiveMagic: leftDefensiveMagicMatch?.match ?? leftChar.defensiveMagic,
-        hpCurrent: leftStats.hp ?? leftChar.hpCurrent,
-        hpMax: leftStats.hp ?? leftChar.hpMax,
-        at: leftStats.at ?? leftChar.at,
-        df: leftStats.df ?? leftChar.df,
-        mg: leftStats.mg ?? leftChar.mg,
-        sp: leftStats.sp ?? leftChar.sp,
-      };
+        // Determine which magic type each side has based on best match confidence
+        const leftIsOffensive = (leftOffensiveMatch?.confidence ?? 0) > (leftDefensiveMatch?.confidence ?? 0);
+        const rightIsOffensive = (rightOffensiveMatch?.confidence ?? 0) > (rightDefensiveMatch?.confidence ?? 0);
 
-      // Update right character state
-      const newRightChar = {
-        ...rightChar,
-        job: rightJobMatch?.match ?? rightChar.job,
-        weapon: rightWeaponMatch?.match ?? rightChar.weapon,
-        offensiveMagic: rightOffensiveMagicMatch?.match ?? rightChar.offensiveMagic,
-        defensiveMagic: rightDefensiveMagicMatch?.match ?? rightChar.defensiveMagic,
-        hpCurrent: rightStats.hp ?? rightChar.hpCurrent,
-        hpMax: rightStats.hp ?? rightChar.hpMax,
-        at: rightStats.at ?? rightChar.at,
-        df: rightStats.df ?? rightChar.df,
-        mg: rightStats.mg ?? rightChar.mg,
-        sp: rightStats.sp ?? rightChar.sp,
-      };
+        // Infer perspective: if left has offensive magic, left is attacking
+        // If left has defensive magic, right is attacking
+        let inferredPerspective: 'leftAttacks' | 'rightAttacks' = 'leftAttacks';
+        if (leftIsOffensive && !rightIsOffensive) {
+          inferredPerspective = 'leftAttacks';
+        } else if (!leftIsOffensive && rightIsOffensive) {
+          inferredPerspective = 'rightAttacks';
+        }
+        // If both or neither match clearly, default to leftAttacks
 
-      console.log('New left character:', newLeftChar);
-      console.log('New right character:', newRightChar);
+        console.log(`Inferred perspective from magic types: ${inferredPerspective}`);
 
-      setLeftChar(newLeftChar);
-      setRightChar(newRightChar);
+        // Update left character state
+        // In battle mode, we don't have job/weapon info, so preserve existing values
+        const newLeftChar = {
+          ...leftChar,
+          offensiveMagic: leftIsOffensive ? (leftOffensiveMatch?.match ?? leftChar.offensiveMagic) : leftChar.offensiveMagic,
+          defensiveMagic: !leftIsOffensive ? (leftDefensiveMatch?.match ?? leftChar.defensiveMagic) : leftChar.defensiveMagic,
+          hpCurrent: leftStats.hp ?? leftChar.hpCurrent,
+          hpMax: leftStats.hp ?? leftChar.hpMax,
+          at: leftStats.at ?? leftChar.at,
+          df: leftStats.df ?? leftChar.df,
+          mg: leftStats.mg ?? leftChar.mg,
+          sp: leftStats.sp ?? leftChar.sp,
+        };
 
-      // Log confidence warnings if needed
-      if (leftJobMatch && leftJobMatch.confidence < 0.7) {
-        console.warn('Low confidence left job match:', leftJobMatch);
-      }
-      if (rightJobMatch && rightJobMatch.confidence < 0.7) {
-        console.warn('Low confidence right job match:', rightJobMatch);
-      }
-      if (leftWeaponMatch && leftWeaponMatch.confidence < 0.7) {
-        console.warn('Low confidence left weapon match:', leftWeaponMatch);
-      }
-      if (rightWeaponMatch && rightWeaponMatch.confidence < 0.7) {
-        console.warn('Low confidence right weapon match:', rightWeaponMatch);
+        // Update right character state
+        const newRightChar = {
+          ...rightChar,
+          offensiveMagic: rightIsOffensive ? (rightOffensiveMatch?.match ?? rightChar.offensiveMagic) : rightChar.offensiveMagic,
+          defensiveMagic: !rightIsOffensive ? (rightDefensiveMatch?.match ?? rightChar.defensiveMagic) : rightChar.defensiveMagic,
+          hpCurrent: rightStats.hp ?? rightChar.hpCurrent,
+          hpMax: rightStats.hp ?? rightChar.hpMax,
+          at: rightStats.at ?? rightChar.at,
+          df: rightStats.df ?? rightChar.df,
+          mg: rightStats.mg ?? rightChar.mg,
+          sp: rightStats.sp ?? rightChar.sp,
+        };
+
+        console.log('New left character:', newLeftChar);
+        console.log('New right character:', newRightChar);
+
+        setLeftChar(newLeftChar);
+        setRightChar(newRightChar);
+
+        // Auto-set perspective based on inferred battle role
+        setPerspective(inferredPerspective);
+        console.log(`Auto-set perspective to: ${inferredPerspective}`);
+
+      } else {
+        // Overworld mode extraction (original logic)
+        const [leftStats, rightStats] = await Promise.all([
+          extractCharacterStats(imageToUse, 'left'),
+          extractCharacterStats(imageToUse, 'right'),
+        ]);
+
+        console.log('Left stats extracted:', leftStats);
+        console.log('Right stats extracted:', rightStats);
+
+        // Apply fuzzy matching to correct OCR errors
+        const leftJobMatch = matchJob(leftStats.job);
+        const leftWeaponMatch = matchWeapon(leftStats.weapon);
+        const leftOffensiveMagicMatch = matchOffensiveMagic(leftStats.offensiveMagic);
+        const leftDefensiveMagicMatch = matchDefensiveMagic(leftStats.defensiveMagic);
+        const rightJobMatch = matchJob(rightStats.job);
+        const rightWeaponMatch = matchWeapon(rightStats.weapon);
+        const rightOffensiveMagicMatch = matchOffensiveMagic(rightStats.offensiveMagic);
+        const rightDefensiveMagicMatch = matchDefensiveMagic(rightStats.defensiveMagic);
+
+        console.log('Job matches:', { left: leftJobMatch, right: rightJobMatch });
+        console.log('Weapon matches:', { left: leftWeaponMatch, right: rightWeaponMatch });
+        console.log('Offensive magic matches:', { left: leftOffensiveMagicMatch, right: rightOffensiveMagicMatch });
+        console.log('Defensive magic matches:', { left: leftDefensiveMagicMatch, right: rightDefensiveMagicMatch });
+
+        // Update left character state
+        const newLeftChar = {
+          ...leftChar,
+          job: leftJobMatch?.match ?? leftChar.job,
+          weapon: leftWeaponMatch?.match ?? leftChar.weapon,
+          offensiveMagic: leftOffensiveMagicMatch?.match ?? leftChar.offensiveMagic,
+          defensiveMagic: leftDefensiveMagicMatch?.match ?? leftChar.defensiveMagic,
+          hpCurrent: leftStats.hp ?? leftChar.hpCurrent,
+          hpMax: leftStats.hp ?? leftChar.hpMax,
+          at: leftStats.at ?? leftChar.at,
+          df: leftStats.df ?? leftChar.df,
+          mg: leftStats.mg ?? leftChar.mg,
+          sp: leftStats.sp ?? leftChar.sp,
+        };
+
+        // Update right character state
+        const newRightChar = {
+          ...rightChar,
+          job: rightJobMatch?.match ?? rightChar.job,
+          weapon: rightWeaponMatch?.match ?? rightChar.weapon,
+          offensiveMagic: rightOffensiveMagicMatch?.match ?? rightChar.offensiveMagic,
+          defensiveMagic: rightDefensiveMagicMatch?.match ?? rightChar.defensiveMagic,
+          hpCurrent: rightStats.hp ?? rightChar.hpCurrent,
+          hpMax: rightStats.hp ?? rightChar.hpMax,
+          at: rightStats.at ?? rightChar.at,
+          df: rightStats.df ?? rightChar.df,
+          mg: rightStats.mg ?? rightChar.mg,
+          sp: rightStats.sp ?? rightChar.sp,
+        };
+
+        console.log('New left character:', newLeftChar);
+        console.log('New right character:', newRightChar);
+
+        setLeftChar(newLeftChar);
+        setRightChar(newRightChar);
+
+        // Log confidence warnings if needed
+        if (leftJobMatch && leftJobMatch.confidence < 0.7) {
+          console.warn('Low confidence left job match:', leftJobMatch);
+        }
+        if (rightJobMatch && rightJobMatch.confidence < 0.7) {
+          console.warn('Low confidence right job match:', rightJobMatch);
+        }
+        if (leftWeaponMatch && leftWeaponMatch.confidence < 0.7) {
+          console.warn('Low confidence left weapon match:', leftWeaponMatch);
+        }
+        if (rightWeaponMatch && rightWeaponMatch.confidence < 0.7) {
+          console.warn('Low confidence right weapon match:', rightWeaponMatch);
+        }
       }
 
       console.log('✓ OCR extraction completed successfully!');
@@ -257,6 +339,30 @@ function App() {
               <h2 className="text-lg font-semibold mb-4">
                 Screenshot Upload
               </h2>
+
+              {/* Screen Mode Toggle */}
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setScreenMode('overworld')}
+                  className={`flex-1 py-2 px-4 rounded font-medium transition-colors ${
+                    screenMode === 'overworld'
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  }`}
+                >
+                  Overworld View
+                </button>
+                <button
+                  onClick={() => setScreenMode('battle')}
+                  className={`flex-1 py-2 px-4 rounded font-medium transition-colors ${
+                    screenMode === 'battle'
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-gray-700 text-gray-400 hover:bg-gray-600'
+                  }`}
+                >
+                  Battle View
+                </button>
+              </div>
 
               {!screenshot ? (
                 <label
@@ -624,6 +730,7 @@ function App() {
           imageData={screenshot}
           onAlignmentComplete={handleAlignmentComplete}
           onCancel={handleAlignmentCancel}
+          screenMode={screenMode}
         />
       )}
 
@@ -632,6 +739,7 @@ function App() {
         <OCRDebugger
           imageData={alignedScreenshot}
           onClose={() => setShowDebugger(false)}
+          screenMode={screenMode}
         />
       )}
     </div>
