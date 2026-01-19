@@ -53,17 +53,36 @@ function App() {
     offensiveMagic: 'Scorch',
   });
 
+  const loadImageFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const imageData = e.target?.result as string;
+      setScreenshot(imageData);
+      setAlignedScreenshot(null);
+      setIsAligning(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const imageData = e.target?.result as string;
-        setScreenshot(imageData);
-        setAlignedScreenshot(null);
-        setIsAligning(true); // Automatically open alignment UI
-      };
-      reader.readAsDataURL(file);
+      loadImageFile(file);
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (file) {
+          loadImageFile(file);
+          break;
+        }
+      }
     }
   };
 
@@ -241,7 +260,9 @@ function App() {
 
               {!screenshot ? (
                 <label
-                  className="relative block border-2 border-dashed border-gray-600 rounded-lg p-8 hover:border-blue-400 transition-colors cursor-pointer text-center overflow-hidden"
+                  tabIndex={0}
+                  onPaste={handlePaste}
+                  className="relative block border-2 border-dashed border-gray-600 rounded-lg p-8 hover:border-blue-400 focus:border-blue-400 focus:outline-none transition-colors cursor-pointer text-center overflow-hidden"
                   style={{
                     backgroundImage: `url(${exampleDokapon})`,
                     backgroundSize: 'contain',
@@ -271,7 +292,7 @@ function App() {
                       />
                     </svg>
                     <p className="mt-2 text-sm text-gray-400">
-                      Click to upload or drag and drop
+                      Click to upload, drag and drop, or paste from clipboard
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
                       Character comparison screenshot (PNG, JPG)

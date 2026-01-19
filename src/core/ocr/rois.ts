@@ -11,7 +11,7 @@ export const REFERENCE_HEIGHT = 1014;
 // Left character card ROIs (calibrated to match OVERLAY_GUIDES)
 export const LEFT_CARD_ROIS: Record<string, ROI> = {
   job: { x: 160, y: 200, w: 300, h: 42 },           // "Warrior" text (matches leftJobBox)
-  hp: { x: 270, y: 320, w: 150, h: 40 },            // "62/140" HP values (matches leftHPBox)
+  hp: { x: 270, y: 320, w: 130, h: 40 },            // "62/140" HP values (matches leftHPBox)
   at: { x: 185, y: 395, w: 90, h: 40 },             // AT stat (derived from leftStatsBox)
   df: { x: 275, y: 395, w: 90, h: 40 },             // DF stat (derived from leftStatsBox)
   mg: { x: 370, y: 395, w: 80, h: 40 },             // MG stat (derived from leftStatsBox)
@@ -24,7 +24,7 @@ export const LEFT_CARD_ROIS: Record<string, ROI> = {
 // Right character card ROIs (calibrated to match OVERLAY_GUIDES)
 export const RIGHT_CARD_ROIS: Record<string, ROI> = {
   job: { x: 700, y: 200, w: 300, h: 42 },           // "Warrior" text (matches rightJobBox)
-  hp: { x: 810, y: 320, w: 150, h: 40 },            // "122/140" HP values (matches rightHPBox)
+  hp: { x: 810, y: 320, w: 130, h: 40 },            // "122/140" HP values (matches rightHPBox)
   at: { x: 725, y: 395, w: 90, h: 40 },             // AT stat (derived from rightStatsBox)
   df: { x: 815, y: 395, w: 87, h: 40 },             // DF stat (derived from rightStatsBox)
   mg: { x: 903, y: 395, w: 85, h: 40 },             // MG stat (derived from rightStatsBox)
@@ -41,8 +41,8 @@ export const OVERLAY_GUIDES = {
   rightCardOutline: { x: 660, y: 90, w: 510, h: 770 },
   leftJobBox: { x: 160, y: 200, w: 300, h: 42 },
   rightJobBox: { x: 700, y: 200, w: 300, h: 42 },
-  leftHPBox: { x: 270, y: 320, w: 150, h: 40 },
-  rightHPBox: { x: 810, y: 320, w: 150, h: 40 },
+  leftHPBox: { x: 270, y: 320, w: 130, h: 40 },
+  rightHPBox: { x: 810, y: 320, w: 130, h: 40 },
   leftATBox: { x: 185, y: 395, w: 90, h: 40 },
   leftDFBox: { x: 275, y: 395, w: 90, h: 40 },
   leftMGBox: { x: 370, y: 395, w: 80, h: 40 },
